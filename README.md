@@ -70,14 +70,6 @@ Die wichtigsten Merkmale laut Feature Importance Visualisierung:
 3. `income`  
 4. Modell-spezifische Dummy-Variablen (`model_<X>`)
 
----
 
-## 💾 Modellpersistenz
-
-Das beste Modell (`RandomForestRegressor`) wurde als `model.pkl` gespeichert:
-
-```python
-with open("model.pkl", "wb") as f:
-    pickle.dump((model_rf, X.columns), f)
 
 
