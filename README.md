@@ -1,64 +1,83 @@
 # AI-End-to-End-Machine-learning-project
 
+# 🚗 Gebrauchtwagenpreis-Vorhersage
+
+## 📄 Projektbeschreibung  
+Ziel dieses Projekts ist es, den Preis von Gebrauchtwagen vorherzusagen. Dazu werden sowohl fahrzeugspezifische Merkmale (wie Kilometerstand, Marke, Modell) als auch landesspezifische Wirtschaftsdaten (z. B. BIP, Einkommen) genutzt.
 
 ---
 
-## 📊 Verwendete Technologien
-
-- Python 3.x
-- pandas, numpy
-- scikit-learn
-- matplotlib / seaborn
-- Gradio
-- Huggingface Spaces
+## 📈 Ergebnisse  
+Das Modell der linearen Regression zeigte ein gutes Fit (R² = 0.96), allerdings ist der RMSE (≈28'375 CHF) relativ hoch.  
+Der Random Forest Regressor zeigte ein deutlich höheres Overfitting-Verhalten mit R² = 0.52 bei RMSE = 99'482 CHF.  
+Dies deutet darauf hin, dass das Modell stark durch einige dominante Features beeinflusst wird oder zusätzliche Feature Engineering nötig ist.
 
 ---
 
-## 🧠 Modelle
+## 🔗 URLs
 
-Trainiert und verglichen wurden folgende Modelle:
-- `LinearRegression`
-- `RandomForestRegressor`
-
-Verglichen wurden sie anhand von:
-- RMSE (Root Mean Squared Error)
-- R² Score (Bestimmtheitsmaß)
+| Name         | Link     |
+|--------------|----------|
+| Huggingface  | *folgt*  |
+| GitHub       | *folgt*  |
 
 ---
 
-## 📈 Feature Engineering
+## 📦 Datenquellen und verwendete Features
 
-- Umrechnung von Baujahr zu Fahrzeugalter
-- Kodierung kategorialer Variablen (Marke, Modell, Kraftstoff)
-- Entfernung von Ausreißern und fehlenden Werten
-
----
-
-## 🚀 Deployment
-
-Die Anwendung wurde mit Gradio implementiert und auf Huggingface Spaces deployt.  
-➡ [Hier klicken, um die App zu testen](#link-einfügen)
+| Datenquelle       | Features                                                                 |
+|-------------------|--------------------------------------------------------------------------|
+| `used_cars.csv`   | `brand`, `model`, `milage`, `fuel_type`, `transmission`, `price`, `country` |
+| `country_data.csv`| `income`, `gdpp`                                                         |
 
 ---
 
-## 📎 Quellen
+## 🛠 Generierte Features
 
-- Datensatz: [Used Car Price Prediction Dataset on Kaggle](https://www.kaggle.com/datasets/taeefnajib/used-car-price-prediction-dataset)
-- Verbrauchsdaten: (falls extern ergänzt)
-
----
-
-## 👨‍🔬 Projektstatus
-
-✅ Datensatz bereinigt  
-✅ Modelle trainiert und verglichen  
-✅ Gradio App entwickelt  
-⏳ Deployment auf Huggingface (in Arbeit)
+| Feature               | Beschreibung                                                      |
+|------------------------|-------------------------------------------------------------------|
+| `milage`              | Kilometerstand bereinigt (numerisch)                              |
+| `relative_price`      | Verhältnis Preis zu mittlerem Einkommen des Landes (`price/income`) |
+| `price_vs_gdpp`       | Verhältnis Preis zu BIP pro Kopf (`price/gdpp`)                   |
+| One-Hot Encoding       | Für `model`, `brand`, `fuel_type`, `transmission`, `country`     |
 
 ---
 
-## 📬 Kontakt
+## 🧪 Modellierung
 
-Dieses Projekt wurde im Rahmen des Moduls **AI Applications FS25** an der ZHAW erstellt.  
-Betreuer: Benjamin Kühnis (kuhs@zhaw.ch)
+**Train/Test-Split**: 80/20 Split mit `random_state=42`  
+**Imputation**: Fehlende Werte wurden mit Mittelwert ersetzt (`SimpleImputer`)
+
+### Trainierte Modelle
+- `LinearRegression` (Scikit-learn)
+- `RandomForestRegressor` (Scikit-learn, 100 Trees, Default)
+
+### Evaluation
+
+| Modell            | RMSE         | R²     |
+|-------------------|--------------|--------|
+| Linear Regression | 28'375.74 CHF| 0.96   |
+| Random Forest     | 99'481.67 CHF| 0.52   |
+
+---
+
+## 📊 Wichtigste Features (Random Forest)
+
+Die wichtigsten Merkmale laut Feature Importance Visualisierung:
+
+1. `milage`  
+2. `gdpp`  
+3. `income`  
+4. Modell-spezifische Dummy-Variablen (`model_<X>`)
+
+---
+
+## 💾 Modellpersistenz
+
+Das beste Modell (`RandomForestRegressor`) wurde als `model.pkl` gespeichert:
+
+```python
+with open("model.pkl", "wb") as f:
+    pickle.dump((model_rf, X.columns), f)
+
 
